@@ -59,24 +59,34 @@
 		"AzureSqlDatabaseForTruncate_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "stepan"
-		},
-		"AzureSqlDatabaseModule5_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "azure-mentoring-sg.database.windows.net"
-		},
-		"AzureSqlDatabaseModule5_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "movies"
-		},
-		"AzureSqlDatabaseModule5_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "stepan"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/MetadataDrivenCopyTask_0mt_ControlDS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "linkedService1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "MetadataDrivenCopyTask_0mt_20250202"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "MainControlTable_0mt"
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/MetadataDrivenCopyTask_0mt_DestinationDS')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
@@ -681,32 +691,6 @@
 					"trustServerCertificate": false,
 					"authenticationType": "SQL",
 					"userName": "[parameters('AzureSqlDatabaseForTruncate_properties_typeProperties_userName')]",
-					"password": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "AzureKeyVaultForSQL",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "stepan"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseModule5')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"server": "[parameters('AzureSqlDatabaseModule5_properties_typeProperties_server')]",
-					"database": "[parameters('AzureSqlDatabaseModule5_properties_typeProperties_database')]",
-					"encrypt": "mandatory",
-					"trustServerCertificate": false,
-					"authenticationType": "SQL",
-					"userName": "[parameters('AzureSqlDatabaseModule5_properties_typeProperties_userName')]",
 					"password": {
 						"type": "AzureKeyVaultSecret",
 						"store": {

@@ -7,6 +7,18 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "mentoring-adf-sg"
 		},
+		"AzureSqlDatabaseModule5_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "azure-mentoring-sg.database.windows.net"
+		},
+		"AzureSqlDatabaseModule5_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "movies"
+		},
+		"AzureSqlDatabaseModule5_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "stepan"
+		},
 		"AzureSqlDatabaseModule5_1_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "azure-mentoring-sg.database.windows.net"
@@ -68,6 +80,32 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseModule5')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('AzureSqlDatabaseModule5_properties_typeProperties_server')]",
+					"database": "[parameters('AzureSqlDatabaseModule5_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('AzureSqlDatabaseModule5_properties_typeProperties_userName')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVaultForSQL",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "stepan"
+					}
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseModule5_1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -1354,78 +1392,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase_DataMart')]"
 			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlTableFactOnlinePurchase')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "Id",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "ServiceId",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "MovieId",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "UserId",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "Price",
-						"type": "decimal",
-						"precision": 4,
-						"scale": 1
-					},
-					{
-						"name": "TransactionId",
-						"type": "nvarchar"
-					},
-					{
-						"name": "TransactionDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "CreatedDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "ModifiedDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "SrcFileName",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "tOnlinePurchase"
-				}
-			},
-			"dependsOn": []
 		}
 	]
 }
