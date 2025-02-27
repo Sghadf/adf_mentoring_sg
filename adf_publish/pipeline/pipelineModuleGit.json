@@ -1,0 +1,17 @@
+{
+	"name": "pipelineModuleGit",
+	"properties": {
+		"activities": [
+			{
+				"name": "WaitGet",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 60
+				}
+			}
+		],
+		"annotations": []
+	}
+}
