@@ -1,0 +1,17 @@
+{
+	"name": "pipelineModule12",
+	"properties": {
+		"activities": [
+			{
+				"name": "WaitForGit",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 60
+				}
+			}
+		],
+		"annotations": []
+	}
+}
