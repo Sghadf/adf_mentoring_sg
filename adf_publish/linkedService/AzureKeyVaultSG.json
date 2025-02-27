@@ -1,0 +1,11 @@
+{
+	"name": "AzureKeyVaultSG",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://forresolved.vault.azure.net/"
+		}
+	}
+}

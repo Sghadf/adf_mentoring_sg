@@ -1,0 +1,17 @@
+{
+	"name": "AzureSqlTablemodule5_1movie",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "linkedService1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "stg",
+			"table": "credits"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

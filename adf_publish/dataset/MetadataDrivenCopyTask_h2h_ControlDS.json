@@ -1,0 +1,20 @@
+{
+	"name": "MetadataDrivenCopyTask_h2h_ControlDS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "linkedService1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "MetadataDrivenCopyTask_h2h_20250204"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "stg",
+			"table": "MainControlTable_h2h"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

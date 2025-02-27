@@ -1,0 +1,225 @@
+{
+	"name": "dataflowModule8_1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTableFactOnlinePurchase",
+						"type": "DatasetReference"
+					},
+					"name": "sourceMoviesOnlinePurchase"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTableDimOnlineService",
+						"type": "DatasetReference"
+					},
+					"name": "sourceDataMartDimOnlineService"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTableOnlineService",
+						"type": "DatasetReference"
+					},
+					"name": "sourceMoviesOnlineService"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTableMovies",
+						"type": "DatasetReference"
+					},
+					"name": "sourceTableMovies"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTableDimMovie",
+						"type": "DatasetReference"
+					},
+					"name": "sourceDataMartDimMovie"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTableFactPurchase",
+						"type": "DatasetReference"
+					},
+					"name": "sinkFactOnlinePurchase"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTableMonthlySnapshot",
+						"type": "DatasetReference"
+					},
+					"name": "sinkFactMonthlySnapshot"
+				}
+			],
+			"transformations": [
+				{
+					"name": "joinService"
+				},
+				{
+					"name": "joinMovies"
+				},
+				{
+					"name": "joinDimOnlineService"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "selectForMontlySnapshot"
+				},
+				{
+					"name": "aggregate1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          TransactionDate as integer,",
+				"          ServiceId as integer,",
+				"          MovieId as integer,",
+				"          Price as decimal(4,1),",
+				"          TransactionId as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT convert(int,convert(varchar,[TransactionDate], 112)) AS [TransactionDate]\\n      ,[ServiceId]\\n      ,[MovieId]\\n      ,[Price]\\n      ,[TransactionId]\\n  FROM [dbo].[tOnlinePurchase]',",
+				"     format: 'query') ~> sourceMoviesOnlinePurchase",
+				"source(output(",
+				"          ServiceKey as integer,",
+				"          ServiceCode as string,",
+				"          ServiceName as string,",
+				"          CreatedDate as timestamp,",
+				"          ModifiedDate as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceDataMartDimOnlineService",
+				"source(output(",
+				"          ServiceId as integer,",
+				"          ServiceCode as string,",
+				"          ServiceName as string,",
+				"          CreatedDate as timestamp,",
+				"          ModifiedDate as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceMoviesOnlineService",
+				"source(output(",
+				"          MovieId as integer,",
+				"          MovieIdNK as integer,",
+				"          Budget as integer,",
+				"          HomepagePath as string,",
+				"          Title as string,",
+				"          OriginalTitle as string,",
+				"          ReleaseDate as date,",
+				"          Revenue as long,",
+				"          Runtime as integer,",
+				"          MovieStatusId as integer,",
+				"          AvgVote as decimal(3,1),",
+				"          CreatedDate as timestamp,",
+				"          ModifiedDate as timestamp,",
+				"          SrcFileName as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceTableMovies",
+				"source(output(",
+				"          MovieKey as integer,",
+				"          MovieIdNK as integer,",
+				"          Title as string,",
+				"          ReleaseDate as date,",
+				"          Runtime as integer,",
+				"          MovieStatus as string,",
+				"          CreatedDate as timestamp,",
+				"          ModifiedDate as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceDataMartDimMovie",
+				"sourceMoviesOnlinePurchase, sourceMoviesOnlineService join(sourceMoviesOnlinePurchase@ServiceId == sourceMoviesOnlineService@ServiceId,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinService",
+				"joinService, sourceTableMovies join(sourceMoviesOnlinePurchase@MovieId == sourceTableMovies@MovieId,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinMovies",
+				"joinMovies, sourceDataMartDimOnlineService join(sourceMoviesOnlineService@ServiceCode == sourceDataMartDimOnlineService@ServiceCode,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinDimOnlineService",
+				"joinDimOnlineService, sourceDataMartDimMovie join(sourceTableMovies@MovieIdNK == sourceDataMartDimMovie@MovieIdNK,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 select(mapColumn(",
+				"          TransactionDate,",
+				"          Price,",
+				"          TransactionId,",
+				"          ServiceKey",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> selectForMontlySnapshot",
+				"selectForMontlySnapshot aggregate(groupBy(MonthKey = toInteger(TransactionDate/100),",
+				"          OnlineServiceKey = ServiceKey),",
+				"     PurchaseAmount = sum(Price),",
+				"          PurchaseQuantity = count(TransactionId)) ~> aggregate1",
+				"join1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          DateKey as integer,",
+				"          OnlineServiceKey as integer,",
+				"          MovieKey as integer,",
+				"          Price as decimal(4,1),",
+				"          TransactionId as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          DateKey = TransactionDate,",
+				"          OnlineServiceKey = ServiceKey,",
+				"          MovieKey,",
+				"          Price,",
+				"          TransactionId",
+				"     )) ~> sinkFactOnlinePurchase",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          MonthKey as integer,",
+				"          OnlineServiceKey as integer,",
+				"          PurchaseAmount as decimal(10,1),",
+				"          PurchaseQuantity as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sinkFactMonthlySnapshot"
+			]
+		}
+	}
+}

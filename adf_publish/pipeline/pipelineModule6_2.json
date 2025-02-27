@@ -1,0 +1,176 @@
+{
+	"name": "pipelineModule6_2",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data from selfHost",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "LookupSelf",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "LookupAzureDB",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlMISource",
+						"sqlReaderQuery": {
+							"value": "SELECT \n       [CinemaCode] as cinema_code\n      ,[CinemaName] as cinema_name\n      ,[MovieId] as movie_id\n      ,[TicketCount] as ticket_count\n      ,[TicketPrice] as ticket_price\n      ,[TransactionId] as transaction_id\n      ,[TransactionDt] as transaction_date\n  FROM [CinemaTickets].[dbo].[Tickets] \n  WHERE [TransactionDt] > '@{activity('LookupAzureDB').output.firstRow.TransactionDate}' ",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "truncate table [stg].[cinema_tickets]",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "AzureSqlSelfHostTickets",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureSqlTableTickets",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "LookupSelf",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlMISource",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlSelfHostTickets",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "LookupAzureDB",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": " select MAX([TransactionDate]) as [TransactionDate] from [dbo].[tCinemaTickets]",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlTableTickets",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Stored procedure Cinema",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy data from selfHost",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[populate_cinema]"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseModule6",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Stored procedure Cinema Tickets",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Stored procedure Cinema",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[populate_cinema_tickets]"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseModule6",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2025-01-08T14:12:30Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

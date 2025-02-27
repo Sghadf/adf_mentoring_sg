@@ -1,0 +1,11 @@
+{
+	"name": "AzureKeyVaultModule7",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://module7key.vault.azure.net/"
+		}
+	}
+}

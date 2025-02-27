@@ -1,0 +1,24 @@
+{
+	"name": "AzureSqlDatabaseForTruncate",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "azure-mentoring-sg.database.windows.net",
+			"database": "movies",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "stepan",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVaultForSQL",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "stepan"
+			}
+		}
+	}
+}
