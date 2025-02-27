@@ -1,0 +1,6 @@
+{
+	"webSite": {
+		"type": "string",
+		"value": "https://mentoring-key-vault-sg.vault.azure.net"
+	}
+}

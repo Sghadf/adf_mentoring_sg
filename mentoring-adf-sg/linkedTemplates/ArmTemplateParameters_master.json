@@ -1,0 +1,213 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "mentoring-adf-sg"
+		},
+		"AzureBlobStorage2_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorage7_3_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorageAU_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorageModule7_2_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorageModule7_source_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorageTEST_SOURCE_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorageTestTarget_connectionString": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
+		"AzureDataLakeStorage2_accountKey": {
+			"value": ""
+		},
+		"AzureDataLakeStorage7_2_accountKey": {
+			"value": ""
+		},
+		"AzureDataLakeStorage7_3_Archive_accountKey": {
+			"value": ""
+		},
+		"AzureDataLakeStorageForAu_accountKey": {
+			"value": ""
+		},
+		"AzureDataLakeStorageTEST_TARGET_accountKey": {
+			"value": ""
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=azure-mentoring-sg.database.windows.net;Initial Catalog=@{linkedService().DBName};User ID=stepan"
+		},
+		"AzureSqlDatabaseModule7_password": {
+			"value": ""
+		},
+		"CopyFilesLog_accountKey": {
+			"value": ""
+		},
+		"linkedService1_password": {
+			"value": ""
+		},
+		"testfunc_accountKey": {
+			"value": ""
+		},
+		"AzureBlobStorage1_properties_typeProperties_sasUri_secretName": {
+			"value": "NewKeyVault"
+		},
+		"AzureBlobStorageModule7_sasUri": {
+			"value": ""
+		},
+		"AzureBlobStorageModule7_properties_typeProperties_sasToken_secretName": {
+			"value": "module7"
+		},
+		"AzureBlobStorageTestSource_properties_typeProperties_sasUri_secretName": {
+			"value": "module7"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://azurementoringdatalakesg.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage2_properties_typeProperties_url": {
+			"value": "https://azurementoringdatalakesg.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage7_2_properties_typeProperties_url": {
+			"value": "https://azurementoringdatalakesg.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage7_3_Archive_properties_typeProperties_url": {
+			"value": "https://azurementoringdatalakesg.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorageForAu_properties_typeProperties_url": {
+			"value": "https://azurementoringdatalakesg.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorageTEST_TARGET_properties_typeProperties_url": {
+			"value": "https://azurementoringdatalakesg.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStoragesg_properties_typeProperties_url": {
+			"value": "https://azurementoringdatalakesg.dfs.core.windows.net/"
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"value": "https://KeyVoultRes.vault.azure.net/"
+		},
+		"AzureKeyVaultForSQL_properties_typeProperties_baseUrl": {
+			"value": "https://keyVaaltForDatabases.vault.azure.net/"
+		},
+		"AzureKeyVaultModule7_properties_typeProperties_baseUrl": {
+			"value": "https://module7key.vault.azure.net/"
+		},
+		"AzureKeyVaultSG_properties_typeProperties_baseUrl": {
+			"value": "https://forresolved.vault.azure.net/"
+		},
+		"AzureKeyVaultSelf_properties_typeProperties_baseUrl": {
+			"value": "https://azurementoring-sg-self.vault.azure.net/"
+		},
+		"AzureKeyVault_DataMart_properties_typeProperties_baseUrl": {
+			"value": "https://keyVaaltForDatabases.vault.azure.net/"
+		},
+		"AzureSqlDatabase2_properties_typeProperties_server": {
+			"value": "azure-mentoring-sg.database.windows.net"
+		},
+		"AzureSqlDatabase2_properties_typeProperties_database": {
+			"value": "movies"
+		},
+		"AzureSqlDatabase2_properties_typeProperties_userName": {
+			"value": "stepan"
+		},
+		"AzureSqlDatabaseForTruncate_properties_typeProperties_server": {
+			"value": "azure-mentoring-sg.database.windows.net"
+		},
+		"AzureSqlDatabaseForTruncate_properties_typeProperties_database": {
+			"value": "movies"
+		},
+		"AzureSqlDatabaseForTruncate_properties_typeProperties_userName": {
+			"value": "stepan"
+		},
+		"AzureSqlDatabaseModule5_properties_typeProperties_server": {
+			"value": "azure-mentoring-sg.database.windows.net"
+		},
+		"AzureSqlDatabaseModule5_properties_typeProperties_database": {
+			"value": "movies"
+		},
+		"AzureSqlDatabaseModule5_properties_typeProperties_userName": {
+			"value": "stepan"
+		},
+		"AzureSqlDatabaseModule5_1_properties_typeProperties_server": {
+			"value": "azure-mentoring-sg.database.windows.net"
+		},
+		"AzureSqlDatabaseModule5_1_properties_typeProperties_database": {
+			"value": "movies"
+		},
+		"AzureSqlDatabaseModule5_1_properties_typeProperties_userName": {
+			"value": "stepan"
+		},
+		"AzureSqlDatabaseModule6_properties_typeProperties_server": {
+			"value": "azure-mentoring-sg.database.windows.net"
+		},
+		"AzureSqlDatabaseModule6_properties_typeProperties_database": {
+			"value": "movies"
+		},
+		"AzureSqlDatabaseModule6_properties_typeProperties_userName": {
+			"value": "stepan"
+		},
+		"AzureSqlDatabaseModule7_properties_typeProperties_server": {
+			"value": "azure-mentoring-sg.database.windows.net"
+		},
+		"AzureSqlDatabaseModule7_properties_typeProperties_database": {
+			"value": "DataMart"
+		},
+		"AzureSqlDatabaseModule7_properties_typeProperties_userName": {
+			"value": "stepan"
+		},
+		"AzureSqlDatabase_DataMart_properties_typeProperties_server": {
+			"value": "azure-mentoring-sg.database.windows.net"
+		},
+		"AzureSqlDatabase_DataMart_properties_typeProperties_database": {
+			"value": "DataMart"
+		},
+		"AzureSqlDatabase_DataMart_properties_typeProperties_userName": {
+			"value": "stepan"
+		},
+		"AzureSqlSelfHost_properties_typeProperties_server": {
+			"value": "D2150-INTERNET"
+		},
+		"AzureSqlSelfHost_properties_typeProperties_database": {
+			"value": "CinemaTickets"
+		},
+		"AzureSqlSelfHost_properties_typeProperties_userName": {
+			"value": "sa"
+		},
+		"CopyFilesLog_properties_typeProperties_url": {
+			"value": "https://azurementoringdatalakesg.dfs.core.windows.net/"
+		},
+		"azurementoringblobstoragesg_sasUri": {
+			"value": ""
+		},
+		"azurementoringblobstoragesg_properties_typeProperties_sasToken_secretName": {
+			"value": "module7"
+		},
+		"linkedService1_properties_typeProperties_server": {
+			"value": "azure-mentoring-sg.database.windows.net"
+		},
+		"linkedService1_properties_typeProperties_database": {
+			"value": "movies"
+		},
+		"linkedService1_properties_typeProperties_userName": {
+			"value": "stepan"
+		},
+		"testfunc_properties_typeProperties_url": {
+			"value": "https://azurementoringdatalakesg.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
