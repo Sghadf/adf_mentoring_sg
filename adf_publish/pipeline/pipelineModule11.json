@@ -1,0 +1,96 @@
+{
+	"name": "pipelineModule11",
+	"properties": {
+		"activities": [
+			{
+				"name": "WebModule11",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Fail1",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"disableCertValidation": true,
+					"url": {
+						"value": "https://mentoring-key-vault-sg.vault.azure.net/secrets/webSite?api-version=7.0",
+						"type": "Expression"
+					},
+					"body": {
+						"value": "\n",
+						"type": "Expression"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": {
+							"value": "@pipeline().globalParameters.webSite",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Web1",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "WebModule11",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"url": {
+						"value": "@activity('WebModule11').output.value",
+						"type": "Expression"
+					},
+					"body": {
+						"value": "{\n    \"message\" : \"This is a custom dynamic message from your pipeline with run ID @{pipeline().RunId}.\",\n    \"dataFactoryName\" : \"@{pipeline().DataFactory}\", \n    \"pipelineName\" : \"@{pipeline().Pipeline}\", \n    \"receiver\" : \"@{pipeline().parameters.receiver}\",\n    \"error\" :  \"@{activity('Fail1').output.message}\"\n}",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Fail1",
+				"type": "Fail",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"message": "Error messge  from module 11",
+					"errorCode": "500"
+				}
+			}
+		],
+		"parameters": {
+			"receiver": {
+				"type": "string",
+				"defaultValue": "stepan_ghazaryan@epam.com"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-02-26T16:29:35Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

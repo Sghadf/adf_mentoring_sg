@@ -1,0 +1,24 @@
+{
+	"name": "AzureSqlTableWatermark",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseModule7",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "WatermarkValue",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "watermarktable"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

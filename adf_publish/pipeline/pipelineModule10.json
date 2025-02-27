@@ -1,0 +1,20 @@
+{
+	"name": "pipelineModule10",
+	"properties": {
+		"activities": [
+			{
+				"name": "Fail1",
+				"type": "Fail",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"message": "Error messge  from module 10 monetoring",
+					"errorCode": "500"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2025-02-26T16:12:55Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

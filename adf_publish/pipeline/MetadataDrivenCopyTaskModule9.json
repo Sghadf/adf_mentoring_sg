@@ -1,0 +1,321 @@
+{
+	"name": "MetadataDrivenCopyTaskModule9",
+	"properties": {
+		"activities": [
+			{
+				"name": "LookupForMainTable",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT count(*) as count \nFROM @{pipeline().parameters.MainControlTableName} \nWHERE TopLevelPipelineName='@{pipeline().parameters.TopLevelPipelineName}' and CopyEnabled = 1",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlTableControlTable",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "LookupForMainTable",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@range(0,activity('LookupForMainTable').output.firstRow.count)",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "CopyMetaDataDriven",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Lookup1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "raw/metadata-driven/@{json(activity('Lookup1').output.firstRow.SourceObjectSettings).fileName}"
+								},
+								{
+									"name": "Destination",
+									"value": "stg.@{json(activity('Lookup1').output.firstRow.SinkObjectSettings).table}"
+								}
+							],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"preCopyScript": {
+										"value": "@json(activity('Lookup1').output.firstRow.CopySinkSettings).preCopyScript",
+										"type": "Expression"
+									},
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false,
+									"tableOption": {
+										"value": "@json(activity('Lookup1').output.firstRow.CopySinkSettings).tableOption\n",
+										"type": "Expression"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"value": "@json(activity('Lookup1').output.firstRow.CopyActivitySettings).translator",
+									"type": "Expression"
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DelimitedTextMetaDataDriven",
+									"type": "DatasetReference",
+									"parameters": {
+										"cw_fileName": {
+											"value": "@json(activity('Lookup1').output.firstRow.SourceObjectSettings).fileName",
+											"type": "Expression"
+										},
+										"cw_escapeChar": {
+											"value": "@json(activity('Lookup1').output.firstRow.SourceObjectSettings).escapeChar",
+											"type": "Expression"
+										},
+										"cw_quoteChar": {
+											"value": "@json(activity('Lookup1').output.firstRow.SourceObjectSettings).quoteChar",
+											"type": "Expression"
+										},
+										"cw_columnDelimiter": {
+											"value": "@json(activity('Lookup1').output.firstRow.SourceObjectSettings).columnDelimiter",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "AzureSqlTableForModule9",
+									"type": "DatasetReference",
+									"parameters": {
+										"cw_table": {
+											"value": "@json(activity('Lookup1').output.firstRow.SinkObjectSettings).table",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Lookup1",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "with MetadataObject as ( SELECT *, ROW_NUMBER() OVER (ORDER BY [Id] DESC) AS RowNumber\nFROM @{pipeline().parameters.MainControlTableName} \nwhere TopLevelPipelineName='@{pipeline().parameters.TopLevelPipelineName}' and CopyEnabled = 1)\nselect * from MetadataObject where RowNumber=@{item()}+1",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "AzureSqlTableControlTable",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "ActivityLogs",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "CopyMetaDataDriven",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[LogActivity]",
+								"storedProcedureParameters": {
+									"activityName": {
+										"value": {
+											"value": "@activity('CopyMetaDataDriven').name",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"billingDuration": {
+										"value": {
+											"value": "@activity('CopyMetaDataDriven').billingReference",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"copyDuration": {
+										"value": {
+											"value": "@activity('CopyMetaDataDriven').copyDuration",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"diuNumber": {
+										"value": {
+											"value": "@activity('CopyMetaDataDriven').usedDataIntegrationUnits",
+											"type": "Expression"
+										},
+										"type": "Int32"
+									},
+									"endTime": {
+										"value": {
+											"value": "@activity('CopyMetaDataDriven').end",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"ErrorMessage": {
+										"value": {
+											"value": "@activity('CopyMetaDataDriven').error.message",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"filesNumber": {
+										"value": {
+											"value": "@activity('CopyMetaDataDriven').filesRead",
+											"type": "Expression"
+										},
+										"type": "Int32"
+									},
+									"parallelcopyNumber": {
+										"value": {
+											"value": "@activity('CopyMetaDataDriven').usedParallelCopies",
+											"type": "Expression"
+										},
+										"type": "Int32"
+									},
+									"pipelineName": {
+										"value": {
+											"value": "@pipeline().Pipeline",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"rowNumber": {
+										"value": {
+											"value": "@activity('CopyMetaDataDriven').rowsRead",
+											"type": "Expression"
+										},
+										"type": "Int32"
+									},
+									"runId": {
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"startTime": {
+										"value": {
+											"value": "@activity('CopyMetaDataDriven').start",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"status": {
+										"value": {
+											"value": "@activity('CopyMetaDataDriven').status",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"transferDuration": {
+										"value": {
+											"value": "@activity('CopyMetaDataDriven').throughput",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "linkedService1",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"MainControlTableName": {
+				"type": "string",
+				"defaultValue": "[etl].[tControlMetadata]"
+			},
+			"TopLevelPipelineName": {
+				"type": "string",
+				"defaultValue": "MetadataDrivenCopyTaskModule9"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-02-13T10:22:03Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

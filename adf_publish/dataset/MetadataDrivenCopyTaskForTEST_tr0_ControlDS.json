@@ -1,0 +1,20 @@
+{
+	"name": "MetadataDrivenCopyTaskForTEST_tr0_ControlDS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "linkedService1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "MetadataDrivenCopyTaskForTEST_tr0_20250204"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "stg",
+			"table": "MainControlTable_Test"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

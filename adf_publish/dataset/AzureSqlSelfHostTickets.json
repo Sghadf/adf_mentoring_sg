@@ -1,0 +1,17 @@
+{
+	"name": "AzureSqlSelfHostTickets",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlSelfHost",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlMITable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Tickets"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

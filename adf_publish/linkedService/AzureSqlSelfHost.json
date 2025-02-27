@@ -1,0 +1,28 @@
+{
+	"name": "AzureSqlSelfHost",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlMI",
+		"typeProperties": {
+			"server": "D2150-INTERNET",
+			"database": "CinemaTickets",
+			"encrypt": "optional",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "sa",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVaultSelf",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "selfHostsa"
+			}
+		},
+		"connectVia": {
+			"referenceName": "integrationRuntime-selfHost",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

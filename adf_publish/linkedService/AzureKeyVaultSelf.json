@@ -1,0 +1,11 @@
+{
+	"name": "AzureKeyVaultSelf",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://azurementoring-sg-self.vault.azure.net/"
+		}
+	}
+}
