@@ -59,6 +59,9 @@
 		"testfunc_accountKey": {
 			"value": ""
 		},
+		"AzureSqlDatabaseGit_password": {
+			"value": ""
+		},
 		"AzureBlobStorage1_properties_typeProperties_sasUri_secretName": {
 			"value": "NewKeyVault"
 		},
@@ -202,6 +205,15 @@
 		},
 		"testfunc_properties_typeProperties_url": {
 			"value": "https://azurementoringdatalakesg.dfs.core.windows.net/"
+		},
+		"AzureSqlDatabaseGit_properties_typeProperties_server": {
+			"value": "azure-mentoring-sg.database.windows.net"
+		},
+		"AzureSqlDatabaseGit_properties_typeProperties_database": {
+			"value": "movies"
+		},
+		"AzureSqlDatabaseGit_properties_typeProperties_userName": {
+			"value": "stepan"
 		},
 		"containerUri": {
 			"value": ""

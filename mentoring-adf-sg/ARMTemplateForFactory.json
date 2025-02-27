@@ -80,6 +80,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'testfunc'"
 		},
+		"AzureSqlDatabaseGit_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSqlDatabaseGit'"
+		},
 		"AzureBlobStorage1_properties_typeProperties_sasUri_secretName": {
 			"type": "string",
 			"defaultValue": "NewKeyVault"
@@ -271,6 +275,18 @@
 		"testfunc_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://azurementoringdatalakesg.dfs.core.windows.net/"
+		},
+		"AzureSqlDatabaseGit_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "azure-mentoring-sg.database.windows.net"
+		},
+		"AzureSqlDatabaseGit_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "movies"
+		},
+		"AzureSqlDatabaseGit_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "stepan"
 		}
 	},
 	"variables": {
@@ -9535,6 +9551,28 @@
 				"[concat(variables('factoryId'), '/datasets/AzureSqlTableFactPurchase')]",
 				"[concat(variables('factoryId'), '/datasets/AzureSqlTableMonthlySnapshot')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseGit')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('AzureSqlDatabaseGit_properties_typeProperties_server')]",
+					"database": "[parameters('AzureSqlDatabaseGit_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('AzureSqlDatabaseGit_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('AzureSqlDatabaseGit_password')]"
+					}
+				}
+			},
+			"dependsOn": []
 		}
 	]
 }
